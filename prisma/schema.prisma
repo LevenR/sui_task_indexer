@@ -1,0 +1,94 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model PurchaseStBTC {
+  id             Int      @id @default(autoincrement())
+  buyer          String
+  amount_in      String
+  amount_out     String
+  atob           Boolean
+  pool           String
+  vault_a_amount String
+  vault_b_amount String
+  block_time     DateTime
+
+  created_time DateTime @default(now())
+  updated_time DateTime @updatedAt
+
+  @@index([buyer])
+  @@index([amount_in])
+  @@index([amount_out])
+  @@index([atob])
+}
+
+model AddLiquidity {
+  id              Int      @id @default(autoincrement())
+  sender          String
+  after_liquidity String
+  amount_a        String
+  amount_b        String
+  liquidity       String
+  pool            String
+  position        String
+  block_time      DateTime
+
+  created_time DateTime @default(now())
+  updated_time DateTime @updatedAt
+
+  @@index([sender])
+  @@index([amount_a])
+}
+
+model NaviCetusTask {
+  user           String  @id
+  supply_task    Boolean @default(false)
+  borrow_task    Boolean @default(false)
+  liquidity_task Boolean @default(false)
+
+  created_time DateTime @default(now())
+  updated_time DateTime @updatedAt
+}
+
+model SupplyStBTC {
+  id         Int      @id @default(autoincrement())
+  amount     String
+  reserve    Int
+  sender     String
+  block_time DateTime
+
+  created_time DateTime @default(now())
+  updated_time DateTime @updatedAt
+
+  @@index([sender])
+  @@index([amount])
+}
+
+model Borrow {
+  id         Int      @id @default(autoincrement())
+  amount     String
+  reserve    Int
+  sender     String
+  block_time DateTime
+
+  created_time DateTime @default(now())
+  updated_time DateTime @updatedAt
+
+  @@index([sender])
+  @@index([amount])
+}
+
+/// Saves the latest cursor for a given key.
+model Cursor {
+  id       String @id
+  eventSeq String
+  txDigest String
+}
