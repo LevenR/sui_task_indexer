@@ -27,7 +27,7 @@ export const handlePurchaseEvent = async (events: SuiEvent[], type: string) => {
 		if (!event.type.startsWith(type)) throw new Error('Invalid event module origin');
 		const data = event.parsedJson as PurchaseEvent;
 		
-		if (data.pool !== CONFIG.STBTC_POOL_ADDRESS || data.atob){
+		if (data.pool != CONFIG.STBTC_POOL_ADDRESS || data.atob){
 			continue;
 		}
 

@@ -18,7 +18,7 @@ export const handleSupplyStBTCEvent = async (events: SuiEvent[], type: string) =
 		if (!event.type.startsWith(type)) throw new Error('Invalid event module origin');
 		const data = event.parsedJson as SupplyStBTCEvent;
 
-		if (data.reserve !== CONFIG.STBTC_RESERVE){
+		if (data.reserve != CONFIG.STBTC_RESERVE_ID){
 			continue;
 		}
 
@@ -31,6 +31,7 @@ export const handleSupplyStBTCEvent = async (events: SuiEvent[], type: string) =
 			block_time: new Date(parseInt(event.timestampMs!)),
 		});
 		if (Number(data.amount) > Number(CONFIG.STBTC_SUPPLY_THRESHOLD)) {
+
 			await prisma.naviCetusTask.upsert(
 				{
 					where: {
