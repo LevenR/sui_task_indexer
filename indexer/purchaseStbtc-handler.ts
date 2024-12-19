@@ -38,6 +38,8 @@ export const handlePurchaseEvent = async (events: SuiEvent[], type: string) => {
 
 		// Handle creation event
 		const block_time = parseInt(event.timestampMs!);
+		const date = new Date(parseInt(event.timestampMs!));
+		console.log(`handleAddLiquidityEvent: data.pool: {}  date: {}`, data.pool, date);
 		if (!bInsert || block_time < 1733310000000 || block_time > 1734537600000) {
 			continue;
 		}

@@ -19,6 +19,8 @@ export const handleBorrowEvent = async (events: SuiEvent[], type: string) => {
 		const data = event.parsedJson as BorrowEvent;
 		
 		const block_time = parseInt(event.timestampMs!);
+		const date = new Date(parseInt(event.timestampMs!));
+		console.log(`handleAddLiquidityEvent: data.reserve: {}  date: {}`, data.reserve, date);
 		if (block_time < 1733310000000 || block_time > 1734537600000) {
 			continue;
 		}
