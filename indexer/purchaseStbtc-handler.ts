@@ -27,11 +27,20 @@ export const handlePurchaseEvent = async (events: SuiEvent[], type: string) => {
 		if (!event.type.startsWith(type)) throw new Error('Invalid event module origin');
 		const data = event.parsedJson as PurchaseEvent;
 		
-		if (data.pool != CONFIG.STBTC_POOL_ADDRESS || data.atob){
-			continue;
+		let bInsert = false;
+		if (data.pool == CONFIG.STBTC_WBTC_POOL_ADDRESS && !data.atob) {
+			bInsert = true;
+		} else if (data.pool == CONFIG.STBTC_USDC_POOL_ADDRESS && data.atob) {
+			bInsert = true;
+		} else if (data.pool == CONFIG.SUI_STBTC_POOL_ADDRESS && !data.atob) {
+			bInsert = true;
 		}
 
 		// Handle creation event
+		const block_time = parseInt(event.timestampMs!);
+		if (!bInsert || block_time < 1733310000000 || block_time > 1734537600000) {
+			continue;
+		}
 		console.log('======Handling purchase event======');
 		updates.push({
 			buyer: event.sender,

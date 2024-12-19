@@ -18,6 +18,10 @@ export const handleBorrowEvent = async (events: SuiEvent[], type: string) => {
 		if (!event.type.startsWith(type)) throw new Error('Invalid event module origin');
 		const data = event.parsedJson as BorrowEvent;
 		
+		const block_time = parseInt(event.timestampMs!);
+		if (block_time < 1733310000000 || block_time > 1734537600000) {
+			continue;
+		}
 		if (data.reserve != CONFIG.BORROW_RESERVE_ID){
 			continue;
 		}

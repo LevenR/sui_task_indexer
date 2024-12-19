@@ -5,7 +5,7 @@ import { EventId, SuiClient, SuiEvent, SuiEventFilter } from '@mysten/sui/client
 
 import { CONFIG } from '../config';
 import { prisma } from '../db';
-import { getClient } from '../sui-utils';
+import { getClient, Network } from '../sui-utils';
 import { handlePurchaseEvent } from './purchaseStbtc-handler';
 import { handleSupplyStBTCEvent } from './supplyStbtc-handler';
 import { handleBorrowEvent } from './borrow-handler';
@@ -161,7 +161,7 @@ const queryEvents = async () => {
 /// They are polling the RPC endpoint every second.
 export const setupListeners = async () => {
 	for (const event of EVENTS_TO_TRACK) {
-		runEventJob(getClient(CONFIG.NETWORK), event, await getLatestCursor(event));
+		runEventJob(getClient(CONFIG.NETWORK as Network), event, await getLatestCursor(event));
 	}
 	// saveLatestCursor(EVENTS_TO_TRACK[0], { eventSeq: "0", txDigest: "GQcSbXMBgH1nmpWfKfGwZhjU6JatL86hLgagmUcRkBww" });
 	// saveLatestCursor(EVENTS_TO_TRACK[1], { eventSeq: "0", txDigest: "GQcSbXMBgH1nmpWfKfGwZhjU6JatL86hLgagmUcRkBww" });

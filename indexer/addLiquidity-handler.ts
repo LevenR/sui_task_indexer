@@ -21,7 +21,11 @@ export const handleAddLiquidityEvent = async (events: SuiEvent[], type: string) 
 		if (!event.type.startsWith(type)) throw new Error('Invalid event module origin');
 		const data = event.parsedJson as AddLiquidityEvent;
 		
-		if (data.pool != CONFIG.STBTC_POOL_ADDRESS){
+		const block_time = parseInt(event.timestampMs!);
+		if (block_time < 1733310000000 || block_time > 1734537600000) {
+			continue;
+		}
+		if (data.pool != CONFIG.STBTC_WBTC_POOL_ADDRESS && data.pool != CONFIG.SUI_STBTC_POOL_ADDRESS){
 			continue;
 		}
 
