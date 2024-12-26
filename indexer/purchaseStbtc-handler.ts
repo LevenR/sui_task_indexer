@@ -28,6 +28,11 @@ export const handlePurchaseEvent = async (events: SuiEvent[], type: string) => {
 		const data = event.parsedJson as PurchaseEvent;
 		
 		let bInsert = false;
+		if(data.pool == CONFIG.STBTC_WBTC_POOL_ADDRESS || 
+			data.pool == CONFIG.STBTC_USDC_POOL_ADDRESS || 
+			data.pool == CONFIG.SUI_STBTC_POOL_ADDRESS){
+				console.log(`handlePurchaseEvent: data.pool: ${data.pool}, data.atob: ${data.atob}`);
+		}
 		if (data.pool == CONFIG.STBTC_WBTC_POOL_ADDRESS && !data.atob) {
 			bInsert = true;
 		} else if (data.pool == CONFIG.STBTC_USDC_POOL_ADDRESS && data.atob) {

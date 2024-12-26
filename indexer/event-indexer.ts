@@ -71,11 +71,19 @@ const executeEventJob = async (
 			order: 'ascending',
 		});
 
+		// 添加日志记录
+		console.log(`Processing ${tracker.type} events:`, {
+			dataLength: data.length,
+			hasNextPage,
+			cursor,
+			nextCursor
+		});
+
 		// handle the data transformations defined for each event
 		await tracker.callback(data, tracker.type);
 
 		// We only update the cursor if we fetched extra data (which means there was a change).
-		if (nextCursor && data.length > 0) {
+		if (nextCursor) {
 			await saveLatestCursor(tracker, nextCursor);
 
 			return {
@@ -84,7 +92,13 @@ const executeEventJob = async (
 			};
 		}
 	} catch (e) {
-		console.error(e);
+		console.error(`Error processing ${tracker.type} events:`, e);
+		// 添加重试机制
+		await new Promise(resolve => setTimeout(resolve, 1000));
+		return {
+			cursor,
+			hasNextPage: true, // 强制重试
+		};
 	}
 	// By default, we return the same cursor as passed in.
 	return {
@@ -163,10 +177,10 @@ export const setupListeners = async () => {
 	for (const event of EVENTS_TO_TRACK) {
 		runEventJob(getClient(CONFIG.NETWORK as Network), event, await getLatestCursor(event));
 	}
-	// saveLatestCursor(EVENTS_TO_TRACK[0], { eventSeq: "0", txDigest: "GQcSbXMBgH1nmpWfKfGwZhjU6JatL86hLgagmUcRkBww" });
-	// saveLatestCursor(EVENTS_TO_TRACK[1], { eventSeq: "0", txDigest: "GQcSbXMBgH1nmpWfKfGwZhjU6JatL86hLgagmUcRkBww" });
-	// saveLatestCursor(EVENTS_TO_TRACK[2], { eventSeq: "0", txDigest: "GQcSbXMBgH1nmpWfKfGwZhjU6JatL86hLgagmUcRkBww" });
-	// saveLatestCursor(EVENTS_TO_TRACK[3], { eventSeq: "0", txDigest: "GQcSbXMBgH1nmpWfKfGwZhjU6JatL86hLgagmUcRkBww" });
+	// saveLatestCursor(EVENTS_TO_TRACK[0], { eventSeq: "0", txDigest: "79gUyUaQbbJgjRrRjTNBSaiXUjv2gJewq1yZBcXiAugq" });
+	// saveLatestCursor(EVENTS_TO_TRACK[1], { eventSeq: "0", txDigest: "79gUyUaQbbJgjRrRjTNBSaiXUjv2gJewq1yZBcXiAugq" });
+	// saveLatestCursor(EVENTS_TO_TRACK[2], { eventSeq: "0", txDigest: "79gUyUaQbbJgjRrRjTNBSaiXUjv2gJewq1yZBcXiAugq" });
+	// saveLatestCursor(EVENTS_TO_TRACK[3], { eventSeq: "0", txDigest: "79gUyUaQbbJgjRrRjTNBSaiXUjv2gJewq1yZBcXiAugq" });
 	// await getLatestCursor(EVENTS_TO_TRACK[0])
 	// await getLatestCursor(EVENTS_TO_TRACK[1])
 	// await getLatestCursor(EVENTS_TO_TRACK[2])

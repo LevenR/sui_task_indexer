@@ -36,7 +36,7 @@ export const handleSupplyStBTCEvent = async (events: SuiEvent[], type: string) =
 			sender: data.sender,
 			block_time: new Date(parseInt(event.timestampMs!)),
 		});
-		if (Number(data.amount) > Number(CONFIG.STBTC_SUPPLY_THRESHOLD)) {
+		if (Number(data.amount) >= Number(CONFIG.STBTC_SUPPLY_THRESHOLD)) {
 
 			await prisma.naviCetusTask.upsert(
 				{
